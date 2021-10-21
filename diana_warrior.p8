@@ -6,13 +6,18 @@ __lua__
 function _init()
 	create_player()
  --create_enemies()
+	init_msg()	
 	
+	end
 	
-end
+
 
 function _update()
+if not msg_list[1] then
  player_movement()
+ end
  update_camera()
+ update_msg()
  
 end
 
@@ -22,6 +27,7 @@ cls()
 	draw_player()
 --	draw_enemies()
 	draw_ui()
+	draw_msg()
 	
 end
 -->8
@@ -60,14 +66,22 @@ function draw_player()
   end
   
   function interact(x,y)
-  if check_flag(1,x,y) then
+  	if check_flag(1,x,y) then
   pick_up_pages(x,y) 
-  else if check_flag(2,x,y)
-  and p.pages==3 then
+  	else if check_flag(2,x,y)
+  	and p.pages==3 then
   open_door(x,y)
   end
-			end
   end
+  --message
+  	if x==20 and y==2 then
+  sfx(3)
+  start_dialogue("harceleur 1","diana","un petit sourire?","...","pourquoi tu fais la gueule","...","vas-y degage salope","fuck le patriarcat")
+--  create_msg("harceleur 1","un petit sourire?","pourquoi tu fais la gueule?","vas-y degage salope")
+	--	create_msg("diana","...","...","fuck le patriarcat !")
+  end
+			end
+  
 -->8
 --map
 
@@ -121,6 +135,60 @@ camera()
 
 
 
+
+-->8
+--message
+
+function init_msg()
+msg_list={}
+current_speaker=""
+pnj_name="harceleur 1"
+player_name="diana"
+
+end
+
+function  create_msg(name,...)
+	msg_title=name
+	messages={...}
+end 
+
+
+function start_dialogue(pnj_name,player_name, ...)
+current_speaker=pnj_name
+pnj_name=harceleur
+player_name=diana
+msg_list={...}
+end
+
+function switch_speaker()
+if current_speaker==pnj_name then
+current_speaker=player_name
+
+else
+current_speaker=pnj_name
+end
+end
+
+
+function update_msg()
+if (btn(❎))then
+deli(msg_list,1)
+switch_speaker() 
+--and messages2[1]
+end
+end
+
+
+function draw_msg()
+if msg_list[1] then
+local y=100
+rectfill(6,y,6+#current_speaker*4,y+8,1)
+print(current_speaker,7,y+1,7)
+rectfill(2,y+11,125,y+20,5)
+rect(2,y+11,125,y+20,1)
+print(msg_list[1],3,y+13,7)
+end
+end
 
 __gfx__
 0000000000000000333333333a3333333333333333333333444444449aa9aaa93333333366666666666666666666667433333365333333333333333333333333
@@ -227,3 +295,4 @@ __sfx__
 000100000000000000000000000000000000003105037050330502d050250501b0501505015050150501505016050000000000000000000000000000000000000000000000000000000000000000000000000000
 00100000000001e05024050280502f05033050380503c0503f0500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000001c2501c2501c2501d2501e25020250212502225023250262502c250322503425033200322003220034200112000e2000c200072000420000200000000000000000000000000000000000000000000000
+00100000000000000000000000000000000000000000000007350083500f350103501035010350083500835008350000000000000000000000000000000000000000000000000000000000000000000000000000
