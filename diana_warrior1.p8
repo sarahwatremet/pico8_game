@@ -5,6 +5,7 @@ __lua__
 
 function _init()
 	create_player()
+	h = create_harceleur()
  --create_enemies()
 	init_msg()	
 	
@@ -43,7 +44,18 @@ p={
   pages=0,
   attack=false,
   }
-  end
+end
+
+function create_harceleur()
+	local h= {
+		x=20,
+		y=2,
+		sprite=28,
+		talked=false,
+		hit=false
+	}
+	return h
+end
   
 function draw_player()
  spr(p.sprite,
@@ -61,7 +73,6 @@ function player_movement()
 	if p.anim_t==0 then
 	 newox=0
 	 newoy=0
- end
  
  if btn(➡️) then
   newx+=1
@@ -78,15 +89,16 @@ function player_movement()
    newy+=1
    newoy=-8
  end
- 
- if btn(❎) then
- 	p.attack=true
- 	else p.attack=false 
  end
+ 
+ --if btn(❎) then
+ --	p.attack=true
+ --	else p.attack=false 
+ --end
   
   
   
-interact(newx,newy)
+	interact(newx,newy)
   
  if not check_flag(0,newx,newy)
  and(p.x!=newx or p.y!=newy) then
@@ -99,38 +111,46 @@ interact(newx,newy)
   
   
   --animation
-  --p.anim_t=max(p.anim_t-0.125,0)
-  --p.ox=p.start_ox*p.anim_t
-  --p.oy=p.start_oy*p.anim_t
+  p.anim_t=max(p.anim_t-0.125,0)
+  p.ox=p.start_ox*p.anim_t
+  p.oy=p.start_oy*p.anim_t
   
 	if p.anim_t>=0.5 then
  	 p.sprite=34
 	else
  	 p.sprite=33
 	end
-  
+ 
+ p.attack=false
  if btn(❎) then 
   	p.sprite=35
+  	p.attack=true
  end
 
 end
   
 
 function interact(x,y)
- if check_flag(1,x,y) then
-  pick_up_pages(x,y) 
- elseif check_flag(2,x,y)
-	and p.pages==3 then
-  open_door(x,y)
- 
-end
-  --message
- if x==20 and y==2 then
-  sfx(3)
-  start_dialogue("harceleur 1","diana","un petit sourire?","...","pourquoi tu fais la gueule","...","vas-y degage salope","fuck le patriarcat")
-	end
+	 if check_flag(1,x,y) then
+	  pick_up_pages(x,y) 
+	 elseif check_flag(2,x,y)
+		and p.pages==3 then
+	  open_door(x,y)
+	 
+		end
+	  --message
+	 if x==h.x and y==h.y and not h.talked  then
+	  sfx(3)
+	  start_dialogue("harceleur 1","diana","un petit sourire?","...","pourquoi tu fais la gueule","...","vas-y degage salope","fuck le patriarcat")
+		end
+		
+		-- is there any message left
+		
+		
+		--if h.talked then
+			--next_tile(h.x,h.y)
+		--end
 	
-
 end
 	 
 			
@@ -227,10 +247,21 @@ end
 
 function update_msg()
 if (btn(❎))then
-deli(msg_list,1)
-switch_speaker() 
---and messages2[1]
-end
+	deli(msg_list,1)
+	switch_speaker()
+
+	if not h.talked and next(msg_list) == nil then
+		h.talked = true
+	end
+	
+	if h.talked and p.attack and not h.hit then
+	 -- harceleur en pls
+		next_tile(h.x,h.y)
+		h.hit = true
+	end
+
+	--and messages2[1]
+	end
 end
 
 
@@ -314,7 +345,7 @@ __gff__
 0000010000000000010001010101000000000101000001000101000109000000000000000000000001010000000000000000000000000000010100000000000001000000000000000000000000010100010000010100000200000500000000000000000000000000000000000000000000000000000000010100000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
-05050505050505030e05050505050505050504050505050e0505040505040505050e050505050505050505050505050505050505050505050505050505050c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+05050505050505030e05050505050505050505050505050e0505040505040505050e050505050505050505050505050505050505050505050505050505050c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 05040503050205050505050205050504030505050e05040504050505050504050505050e04050505050503050505050e05050505050505050505050505570c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 05050505050504050505050503050505050505051c050505050504050e05050505040505050505030405050505040505050e0505050518190505050505050c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 050403040d05050503050504050505040513131314131305050505050503050e05040505050e0505050405050304050405040405050528290505050505050c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
