@@ -5,7 +5,9 @@ __lua__
 
 function _init()
 	create_player()
-	h = create_harceleur()
+	h = create_harceleur1()
+	h2 = create_harceleur2()
+ h3 = create_harceleur3()
  --create_enemies()
 	init_msg()	
 	
@@ -49,16 +51,6 @@ p={
   }
 end
 
-function create_harceleur()
-	local h= {
-		x=20,
-		y=2,
-		sprite=28,
-		talked=false,
-		hit=false
-	}
-	return h
-end
   
 function draw_player()
 --apparition sprite du joueur
@@ -142,18 +134,25 @@ function interact(x,y)
 	 
 		end
 	  --message
-	 if x==h.x and y==h.y and not h.talked  then
+	 if x==h.x and y==h.y 
+	 and not h.talked  then
 	  sfx(3)
 	  start_dialogue("harceleur 1","diana","un petit sourire?","...","pourquoi tu fais la gueule","...","vas-y degage salope","fuck le patriarcat")
 		end
 		
-		-- is there any message left
+		--condition harceleur2
+		if x==h2.x and y==h2.y
+		and not h2.talked then
+			sfx(3)
+			start_dialogue("harceleur 2","diana","hop")
+		end
 		
+			if x==h3.x and y==h3.y
+		and not h3.talked then
+			sfx(3)
+			start_dialogue("harceleur 3","diana","coucou")
+		end
 		
-		--if h.talked then
-			--next_tile(h.x,h.y)
-		--end
-	
 end
 	 
 			
@@ -216,13 +215,46 @@ camera()
 
 
 
+function create_harceleur1()
+	local h= {
+		x=20,
+		y=2,
+		sprite=28,
+		talked=false,
+		hit=false
+	}
+	return h
+end
+ 
+--essai combat harceleur2
+function create_harceleur2()
+	local h2= {
+		x=7,
+		y=12,
+		sprite=28,
+		talked=false,
+		hit=false
+	}
+	return h2
+end
+
+function create_harceleur3()
+	local h3= {
+		x=52,
+		y=2,
+		sprite=28,
+		talked=false,
+		hit=false
+	}
+	return h3
+end
 -->8
 --message
 
 function init_msg()
 msg_list={}
 current_speaker=""
-pnj_name="harceleur 1"
+pnj_name=""
 player_name="diana"
 
 end
@@ -266,6 +298,34 @@ if (btn(❎))then
 	 -- harceleur en pls
 		next_tile(h.x,h.y)
 		h.hit = true
+	end
+	
+	if not h2.talked
+	 and next(msg_list) == nil
+ 	and p.x==8 and p.y==12 
+ 	or p.x==7 and p.x==11 then
+		h2.talked = true
+	end
+	
+	if h2.talked and p.attack
+	 and not h2.hit then
+	 -- harceleur2 en pls
+		next_tile(h2.x,h2.y)
+		h2.hit = true
+	end
+	
+	
+	if not h3.talked
+	 and next(msg_list) == nil
+ 	and p.x==51 and p.y==2  then
+		h3.talked = true
+	end
+	
+	if h3.talked and p.attack
+	 and not h3.hit then
+	 -- harceleur3 en pls
+		next_tile(h3.x,h3.y)
+		h3.hit = true
 	end
 
 	--and messages2[1]
